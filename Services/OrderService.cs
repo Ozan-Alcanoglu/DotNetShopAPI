@@ -6,43 +6,40 @@ using System.Threading.Tasks;
 
 namespace FirstCSBackend.Services;
 
-public class UserService : IUserService
+public class OrderService : IOrderService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IOrderRepository _orderRepository;
 
-    public UserService(IUserRepository userRepository)
+    public OrderService(IOrderRepository orderRepository)
     {
-        _userRepository = userRepository;
+        _orderRepository = orderRepository;
     }
 
-    public async Task<User?> GetByIdAsync(int id) =>
-        await _userRepository.GetByIdAsync(id);
+    public async Task<Order?> GetByIdAsync(int id) =>
+        await _orderRepository.GetByIdAsync(id);
 
-    public async Task<User?> GetByUsernameAsync(string username) =>
-        await _userRepository.GetByUsernameAsync(username);
+    public async Task<IEnumerable<Order>> GetAllAsync() =>
+        await _orderRepository.GetAllAsync();
 
-    public async Task<IEnumerable<User>> GetAllAsync() =>
-        await _userRepository.GetAllAsync();
-
-    public async Task AddAsync(User user)
+    public async Task AddAsync(Order order)
     {
-        await _userRepository.AddAsync(user);
-        await _userRepository.SaveChangesAsync();
+        await _orderRepository.AddAsync(order);
+        await _orderRepository.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(User user)
+    public async Task UpdateAsync(Order order)
     {
-        _userRepository.Update(user);
-        await _userRepository.SaveChangesAsync();
+        _orderRepository.Update(order);
+        await _orderRepository.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        var user = await _userRepository.GetByIdAsync(id);
-        if (user != null)
+        var order = await _orderRepository.GetByIdAsync(id);
+        if (order != null)
         {
-            _userRepository.Delete(user);
-            await _userRepository.SaveChangesAsync();
+            _orderRepository.Delete(order);
+            await _orderRepository.SaveChangesAsync();
         }
     }
 }
