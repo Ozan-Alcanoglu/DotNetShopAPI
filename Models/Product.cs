@@ -7,4 +7,7 @@ public class Product
     public decimal Price { get; set; }
 
     public ICollection<Order>? Orders { get; set; }
+
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
 }
