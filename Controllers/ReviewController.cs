@@ -32,11 +32,12 @@ namespace FirstCSBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Review review)
+        public async Task<IActionResult> Create([FromBody] ReviewCreateDto reviewDto)
         {
-            var createdReview = await _reviewService.CreateReviewAsync(review);
+            var createdReview = await _reviewService.CreateReviewAsync(reviewDto);
             return CreatedAtAction(nameof(GetById), new { id = createdReview.Id }, createdReview);
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, Review review)

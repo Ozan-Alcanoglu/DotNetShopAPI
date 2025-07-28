@@ -12,7 +12,7 @@ public interface IReviewService
     Task<Review?> GetReviewByIdAsync(int id);
     Task<IEnumerable<Review>> GetReviewsByProductIdAsync(int productId);
     Task<IEnumerable<Review>> GetReviewsByUserIdAsync(int userId);
-    Task<Review> CreateReviewAsync(Review review);
+    Task<Review> CreateReviewAsync(ReviewCreateDto dto);
     Task<Review?> UpdateReviewAsync(int id, Review review);
     Task<bool> DeleteReviewAsync(int id);
 }

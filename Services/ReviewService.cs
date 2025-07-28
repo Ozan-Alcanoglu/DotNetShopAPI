@@ -32,10 +32,19 @@ public class ReviewService : IReviewService
     {
         return await _reviewRepository.GetReviewsByUserIdAsync(userId);
     }
-    public async Task<Review> CreateReviewAsync(Review review)
+    public async Task<Review> CreateReviewAsync(ReviewCreateDto reviewDto)
     {
+        var review = new Review
+        {
+            Rating = reviewDto.Rating,
+            Comment = reviewDto.Comment,
+            ProductId = reviewDto.ProductId,
+            UserId = reviewDto.UserId
+        };
+
         return await _reviewRepository.CreateReviewAsync(review);
     }
+
     public async Task<Review?> UpdateReviewAsync(int id, Review review)
     {
         return await _reviewRepository.UpdateReviewAsync(id, review);
