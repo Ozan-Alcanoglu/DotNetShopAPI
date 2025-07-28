@@ -32,10 +32,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(User user)
+    public async Task<IActionResult> Create([FromBody] UserCreateDto userDto)
     {
-        await _userService.AddAsync(user);
-        return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+        await _userService.AddAsync(userDto);
+        return CreatedAtAction(nameof(GetById), new { id = userDto.Username }, userDto);
     }
 
     [HttpPut("{id}")]
