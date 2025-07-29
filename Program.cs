@@ -5,8 +5,6 @@ using FirstCSBackend.Repositories.Interfaces;
 using FirstCSBackend.Repositories;
 using FirstCSBackend.Services.Interfaces;
 using FirstCSBackend.Services;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddControllers();
+// MVC desteði ekle (API + Views)
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -33,24 +32,32 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
+// Kestrel portunu builder aþamasýnda ayarla
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenLocalhost(5000);
+});
+
 var app = builder.Build();
 
-// Swagger her ortamda açýk
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "FirstCSBackend API v1");
-    c.RoutePrefix = string.Empty; // Swagger ana sayfa olarak açýlýr
+    c.RoutePrefix = string.Empty; // Swagger'ý ana sayfa yap
 });
 
 app.UseHttpsRedirection();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.UseRouting();
+
 app.UseAuthorization();
 
-app.MapControllers();
-
-// Kestrel server portu zorla 5000 olarak ayarla
-app.Urls.Clear();
-app.Urls.Add("http://localhost:5000");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
