@@ -31,7 +31,15 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ProductionPolicy", builder =>
+    {
+        builder.WithOrigins("http://localhost:5000")
+               .WithMethods("GET", "POST", "PUT", "DELETE")
+               .AllowAnyHeader();
+    });
+});
 // Kestrel portunu builder aþamasýnda ayarla
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
@@ -48,7 +56,7 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
-
+app.UseCors("ProductionPolicy");
 app.UseDefaultFiles();
 app.UseStaticFiles();
 

@@ -1,4 +1,5 @@
 using System;
+namespace FirstCSBackend.Dto;
 
 public class ReviewCreateDto
 {

@@ -1,7 +1,7 @@
 using FirstCSBackend.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using FirstCSBackend.Dto;
 namespace FirstCSBackend.Services.Interfaces;
 
 public interface IUserService

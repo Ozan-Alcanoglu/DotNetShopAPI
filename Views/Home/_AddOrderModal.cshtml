@@ -1,0 +1,70 @@
+@model FirstCSBackend.Dto.OrderCreateDto
+
+<div class="modal fade" id="addOrderModal" tabindex="-1" aria-labelledby="addOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addOrderModalLabel">Yeni Sipariş Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <form id="addOrderForm" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="orderUserId" class="form-label">Kullanıcı ID</label>
+                        <input type="number" class="form-control" id="orderUserId" name="UserId" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="orderProductId" class="form-label">Ürün ID</label>
+                        <input type="number" class="form-control" id="orderProductId" name="ProductId" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="orderQuantity" class="form-label">Miktar</label>
+                        <input type="number" class="form-control" id="orderQuantity" name="Quantity" required min="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#addOrderForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const orderData = {
+                    userId: parseInt($('#orderUserId').val()),
+                    productId: parseInt($('#orderProductId').val()),
+                    quantity: parseInt($('#orderQuantity').val())
+                };
+
+                console.log('Sending order data:', orderData);
+
+                $.ajax({
+                    url: '/api/Order',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    data: JSON.stringify(orderData),
+                    success: function(response) {
+                        console.log('Order added successfully:', response);
+                        $('#addOrderModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error adding order:', xhr.responseText);
+                        alert('Sipariş eklenirken bir hata oluştu: ' + (xhr.responseJSON?.error || error));
+                    }
+                });
+            });
+        });
+    </script>
+}

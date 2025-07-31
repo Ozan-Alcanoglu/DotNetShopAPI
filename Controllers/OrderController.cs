@@ -3,6 +3,7 @@ using FirstCSBackend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FirstCSBackend.Dto;
 
 namespace FirstCSBackend.Controllers;
 
@@ -32,10 +33,17 @@ public class OrderController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(Order order)
+    public async Task<IActionResult> Create(OrderCreateDto orderDto)
     {
-        await _orderService.AddAsync(order);
-        return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
+        try
+        {
+            await _orderService.AddAsync(orderDto);
+            return Ok(new { message = "Sipariş başarıyla oluşturuldu" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Sipariş oluşturulurken bir hata oluştu: " + ex.Message });
+        }
     }
 
     [HttpPut("{id}")]

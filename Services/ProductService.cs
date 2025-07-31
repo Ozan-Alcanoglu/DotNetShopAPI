@@ -1,7 +1,7 @@
 using FirstCSBackend.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using FirstCSBackend.Dto;
 using FirstCSBackend.Repositories.Interfaces;
 using FirstCSBackend.Services.Interfaces;
 namespace FirstCSBackend.Services;
@@ -21,9 +21,17 @@ public class ProductService : IProductService
     public async Task<IEnumerable<Product>> GetAllAsync() =>
         await _productRepository.GetAllAsync();
 
-    public async Task AddAsync(Product product)
+    public async Task AddAsync(ProductCreateDto product)
     {
-        await _productRepository.AddAsync(product);
+        
+
+        var newProduct = new Product
+        {
+            Name = product.Name,
+            Price = product.Price,
+        };
+
+        await _productRepository.AddAsync(newProduct);
         await _productRepository.SaveChangesAsync();
     }
 

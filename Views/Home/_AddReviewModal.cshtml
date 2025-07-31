@@ -1,0 +1,75 @@
+@model FirstCSBackend.Dto.ReviewCreateDto
+
+<div class="modal fade" id="addReviewModal" tabindex="-1" aria-labelledby="addReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addReviewModalLabel">Yeni Yorum Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <form id="addReviewForm" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="reviewUserId" class="form-label">Kullanıcı ID</label>
+                        <input type="number" class="form-control" id="reviewUserId" name="UserId" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewProductId" class="form-label">Ürün ID</label>
+                        <input type="number" class="form-control" id="reviewProductId" name="ProductId" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewComment" class="form-label">Yorum</label>
+                        <textarea class="form-control" id="reviewComment" name="Comment" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewRating" class="form-label">Puan (1-5)</label>
+                        <input type="number" class="form-control" id="reviewRating" name="Rating" min="1" max="5" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#addReviewForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const reviewData = {
+                    userId: parseInt($('#reviewUserId').val()),
+                    productId: parseInt($('#reviewProductId').val()),
+                    comment: $('#reviewComment').val(),
+                    rating: parseInt($('#reviewRating').val())
+                };
+
+                console.log('Sending review data:', reviewData);
+
+                $.ajax({
+                    url: '/api/Review',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    data: JSON.stringify(reviewData),
+                    success: function(response) {
+                        console.log('Review added successfully:', response);
+                        $('#addReviewModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error adding review:', xhr.responseText);
+                        alert('Yorum eklenirken bir hata oluştu: ' + (xhr.responseJSON?.error || error));
+                    }
+                });
+            });
+        });
+    </script>
+}

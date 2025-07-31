@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace FirstCSBackend.Controllers
+namespace FýrstCSBackend.Controllers
 {
     public class HomeController : Controller
     {

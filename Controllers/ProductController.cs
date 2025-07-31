@@ -3,6 +3,7 @@ using FirstCSBackend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FirstCSBackend.Dto;
 
 namespace FirstCSBackend.Controllers;
 
@@ -32,10 +33,17 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(Product product)
+    public async Task<IActionResult> Create(ProductCreateDto productDto)
     {
-        await _productService.AddAsync(product);
-        return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+        try
+        {
+            await _productService.AddAsync(productDto);
+            return Ok(new { message = "Ürün başarıyla oluşturuldu" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Ürün oluşturulurken bir hata oluştu: " + ex.Message });
+        }
     }
 
     [HttpPut("{id}")]

@@ -1,0 +1,65 @@
+@model FirstCSBackend.Dto.UserCreateDto
+
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Yeni Kullanıcı Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <form id="addUserForm" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="userName" class="form-label">Kullanıcı Adı</label>
+                        <input type="text" class="form-control" id="userName" name="Username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userPassword" class="form-label">Şifre</label>
+                        <input type="password" class="form-control" id="userPassword" name="Password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#addUserForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const userData = {
+                    username: $('#userName').val(),
+                    password: $('#userPassword').val()
+                };
+
+                console.log('Sending user data:', userData);
+
+                $.ajax({
+                    url: '/api/add/user',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    data: JSON.stringify(userData),
+                    success: function(response) {
+                        console.log('User added successfully:', response);
+                        $('#addUserModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error adding user:', xhr.responseText);
+                        alert('Kullanıcı eklenirken bir hata oluştu: ' + (xhr.responseJSON?.error || error));
+                    }
+                });
+            });
+        });
+    </script>
+}

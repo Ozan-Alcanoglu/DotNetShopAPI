@@ -3,11 +3,12 @@ using FirstCSBackend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FirstCSBackend.Dto;
 
 namespace FirstCSBackend.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("/api")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -31,11 +32,18 @@ public class UserController : ControllerBase
         return user;
     }
 
-    [HttpPost]
+    [HttpPost("/add/user")]
     public async Task<IActionResult> Create([FromBody] UserCreateDto userDto)
     {
-        await _userService.AddAsync(userDto);
-        return CreatedAtAction(nameof(GetById), new { id = userDto.Username }, userDto);
+        try
+        {
+            await _userService.AddAsync(userDto);
+            return Ok(new { message = "Kullanıcı başarıyla oluşturuldu" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Kullanıcı oluşturulurken bir hata oluştu: " + ex.Message });
+        }
     }
 
     [HttpPut("{id}")]

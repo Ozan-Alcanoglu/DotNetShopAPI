@@ -3,6 +3,7 @@ using FirstCSBackend.Repositories.Interfaces;
 using FirstCSBackend.Services.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FirstCSBackend.Dto;
 
 namespace FirstCSBackend.Services;
 
@@ -21,9 +22,19 @@ public class OrderService : IOrderService
     public async Task<IEnumerable<Order>> GetAllAsync() =>
         await _orderRepository.GetAllAsync();
 
-    public async Task AddAsync(Order order)
+    public async Task AddAsync(OrderCreateDto order)
     {
-        await _orderRepository.AddAsync(order);
+
+        
+
+        var newOrder= new Order
+        {
+            UserId = order.UserId,
+            ProductId = order.ProductId,
+            Quantity = order.Quantity,
+        };
+
+        await _orderRepository.AddAsync(newOrder);
         await _orderRepository.SaveChangesAsync();
     }
 
